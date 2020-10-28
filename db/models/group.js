@@ -3,23 +3,23 @@ module.exports = (sequelize, DataTypes) => {
   const Group = sequelize.define('Group', {
     name: {
       allowNull: false,
-      type: Sequelize.STRING(250)
+      type: DataTypes.STRING(250)
     },
     description: {
       allowNull: false,
-      type: Sequelize.TEXT
+      type: DataTypes.TEXT
     },
     city: {
       allowNull: false,
-      type: Sequelize.STRING(50)
+      type: DataTypes.STRING(50)
     },
     category: {
       allowNull: false,
-      type: Sequelize.STRING(50)
+      type: DataTypes.STRING(50)
     },
     organizer_id: {
       allowNull: false,
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
     },
   }, {});
   Group.associate = function(models) {

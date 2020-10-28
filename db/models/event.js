@@ -3,23 +3,23 @@ module.exports = (sequelize, DataTypes) => {
   const Event = sequelize.define('Event', {
     name: {
       allowNull: false,
-      type: Sequelize.STRING(50)
+      type: DataTypes.STRING(50)
     },
     description: {
       allowNull: true,
-      type: Sequelize.TEXT
+      type: DataTypes.TEXT
     },
     date_start: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     date_end: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     group_id: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
   }, {});
   Event.associate = function(models) {

@@ -3,11 +3,11 @@ module.exports = (sequelize, DataTypes) => {
   const Event_Member = sequelize.define('Event_Member', {
     event_id: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
     member_id: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
   }, {});
   Event_Member.associate = function(models) {

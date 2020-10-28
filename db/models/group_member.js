@@ -3,11 +3,11 @@ module.exports = (sequelize, DataTypes) => {
   const Group_Member = sequelize.define('Group_Member', {
     group_id: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
     member_id: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
   }, {});
   Group_Member.associate = function(models) {

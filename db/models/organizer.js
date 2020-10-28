@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Organizer = sequelize.define('Organizer', {
     member_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
     },
   }, {});
   Organizer.associate = function(models) {
