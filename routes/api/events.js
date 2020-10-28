@@ -13,7 +13,7 @@ router.post(`/:eventId/attend`, asyncHandler( async (req, res) => {
     event_id,
     member_id
   });
-  res.status(201);
+  res.status(200);
 }));
 
 
@@ -23,7 +23,7 @@ router.delete(`/:eventId/unattend`, asyncHandler( async(req, res) => {
   const event_id = parseInt(req.params.id, 10)
   const {member_id} = req.body;
   await Event_Member.delete({
-    where :{
+    where: {
       [Op.and]: [{event_id}, {member_id}]
     }
   });
@@ -52,7 +52,7 @@ router.delete(`/delete`, asyncHandler( async(req, res) => {
       group_id
     }
   });
-  res.status(201);
+  res.status(200);
 }));
 
 
