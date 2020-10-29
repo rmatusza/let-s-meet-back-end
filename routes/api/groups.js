@@ -22,6 +22,19 @@ router.get(`/`, asyncHandler( async(req, res) => {
   res.json({groups})
 }))
 
+// returns all groups that meet the search critera as well as the selected location
+
+router.get(`/search/:city`, asyncHandler( async(req, res) => {
+  const city = req.params.city
+  console.log(city)
+  const groups = await Group.findAll({
+    where: {
+      city
+    }
+  })
+  res.json({groups})
+}))
+
 
 // returns all info about the selected group and the events that belong to it
 
