@@ -126,4 +126,22 @@ router.post(`/:groupId/unsubscribe`, asyncHandler( async(req, res) => {
   res.json({message: "Member left group!"})
 }))
 
+// provides info to the front end about a users membership status
+
+router.get(`/:groupId/:member_id`, asyncHandler(async(req, res) => {
+  const group_id = req.params.groupId
+  const member_id = req.params.member_id
+  // const {member_id} = req.body
+  console.log('GROUP ID:', group_id)
+  console.log('MEMBER ID:', member_id)
+  const isMember = await Group_Member.findAll({
+    where: {
+      [Op.and]: [{group_id}, {member_id}]
+    }
+  })
+  console.log('IS MEMBER:', isMember)
+  isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
+
+}))
+
 module.exports = router;

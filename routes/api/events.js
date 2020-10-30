@@ -44,13 +44,14 @@ router.post('/:id/attend', asyncHandler( async (req, res) => {
 
 // allows user to un-attend an event
 
-router.delete(`/:id/unattend`, asyncHandler( async(req, res) => {
-  const event_id = req.params.id
+router.post('/:event_id/unattend', asyncHandler( async(req, res) => {
+
+  const event_id = req.params.event_id
   const {member_id} = req.body;
+
   await Event_Member.destroy({
     where: {
-     event_id,
-      member_id
+      [Op.and]: [{event_id}, {member_id}]
     }
   });
   // res.status(200);
@@ -87,5 +88,23 @@ router.delete(`/:id/delete`, asyncHandler( async(req, res) => {
   res.json({message: 'success'})
 }));
 
+
+// provides info to the front end about a users event status
+
+router.get(`/:eventId/:member_id`, asyncHandler(async(req, res) => {
+  const event_id = req.params.eventId
+  const member_id = req.params.member_id
+  // const {member_id} = req.body
+  // console.log('GROUP ID:', group_id)
+  console.log('MEMBER ID:', member_id)
+  const isMember = await Event_Member.findAll({
+    where: {
+      [Op.and]: [{event_id}, {member_id}]
+    }
+  })
+  console.log('IS MEMBER:', isMember)
+  isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
+
+}))
 
 module.exports = router;
