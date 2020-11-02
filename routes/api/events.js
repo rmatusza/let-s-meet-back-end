@@ -1,7 +1,7 @@
 const express = require('express');
 const {asyncHandler} = require('../../utils.js')
 const db = require('../../db/models')
-const { Event, Event_Member } = db
+const { Event, Event_Member, Group_Member, Group } = db
 const router = express.Router();
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
@@ -14,16 +14,38 @@ router.get(`/test`, asyncHandler( async(req, res) => {
 
 // returns all events for a particular date
 
-router.get(`/:date`, asyncHandler( async(req, res) => {
+router.get(`/:date/:user`, asyncHandler( async(req, res) => {
   let date = req.params.date
-  let formattedDate = date.split('-').join('/')
-  console.log('HERE IS THE DATE:' , formattedDate)
-  const events = await Event.findAll({
+  // console.log(date)
+  let member_id = req.params.user
+  // let formattedDate = date.split('-')
+  // let dateString = ''
+  // dateString += formattedDate[1] + '/' + formattedDate[2] + '/' + formattedDate[0]
+  // console.log('HERE IS THE DATE:' , dateString)
+  const memberGroups = await Group_Member.findAll({
     where: {
-      date_start: formattedDate
+     member_id
+    },
+    include: [{model: Group}]
+  })
+
+  const groups = []
+
+  memberGroups.forEach(group => {
+    groups.push(group.group_id)
+  })
+
+
+  const events = await Event.findAll( {
+    where: {
+      group_id: {
+        [Op.or]: groups
+      }
     }
   })
 
+
+  // res.json({matchingEvents})
   res.json({events})
 }))
 

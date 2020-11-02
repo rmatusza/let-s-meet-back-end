@@ -10,8 +10,8 @@ const Op = Sequelize.Op
 
 // returns all group data releated to the user once the group tab is clicked
 
-router.get(`/`, asyncHandler( async(req, res) => {
-  const{group_id, member_id} = req.body
+router.get(`/users/:memberId`, asyncHandler( async(req, res) => {
+  const member_id = req.params.memberId
   const groups = await Group_Member.findAll({
     where: {
       member_id
@@ -26,7 +26,7 @@ router.get(`/`, asyncHandler( async(req, res) => {
 
 router.get(`/search/:city`, asyncHandler( async(req, res) => {
   const city = req.params.city
-  console.log(city)
+  // console.log(city)
   const groups = await Group.findAll({
     where: {
       city
@@ -46,6 +46,8 @@ router.get(`/:id`, asyncHandler( async(req, res) => {
       id: group_id
     }
   })
+
+  console.log('HERE IS THE GROUP:', group)
 
   const events = await Event.findAll({
     where: {
@@ -109,6 +111,17 @@ router.post(`/:groupId/subscribe`, asyncHandler( async(req, res) => {
   res.json({message: "Member joined group!"})
 }))
 
+router.patch(`/:groupId/increment`, asyncHandler( async(req, res) => {
+  const group_id = req.params.groupId
+  const {groupMembers} = req.body
+  
+  await Group.update({
+    members: groupMembers,
+    where: {
+      id: group_id
+    }
+  })
+}))
 
 // allows a user to unsubscribe to a group
 
@@ -132,14 +145,14 @@ router.get(`/:groupId/:member_id`, asyncHandler(async(req, res) => {
   const group_id = req.params.groupId
   const member_id = req.params.member_id
   // const {member_id} = req.body
-  console.log('GROUP ID:', group_id)
-  console.log('MEMBER ID:', member_id)
+  // console.log('GROUP ID:', group_id)
+  // console.log('MEMBER ID:', member_id)
   const isMember = await Group_Member.findAll({
     where: {
       [Op.and]: [{group_id}, {member_id}]
     }
   })
-  console.log('IS MEMBER:', isMember)
+  // console.log('IS MEMBER:', isMember)
   isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
 
 }))

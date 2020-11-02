@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER
     },
+    attendes: {
+      allowNull: true,
+      type: DataTypes.INTEGER
+    }
   }, {});
   Event.associate = function(models) {
     // associations can be defined here

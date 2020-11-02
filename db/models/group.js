@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER,
     },
+    members: {
+      allowNull: true,
+      type: DataTypes.INTEGER
+    }
   }, {});
   Group.associate = function(models) {
     // associations can be defined here
