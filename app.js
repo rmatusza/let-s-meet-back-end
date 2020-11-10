@@ -1,10 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
 const cors = require('cors');
-const bodyParser = require('body-parser')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api/users');
@@ -14,14 +11,11 @@ const groupsRouter = require('./routes/api/groups')
 const app = express();
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger('dev'));
+app.use(cors({ origin: 'http://localhost:3000'}));
+app.use(morgan('dev'));
 app.use(express.json());
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: false }));
 
-app.use(cors({ origin: "http://localhost:3000" }));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/events', eventsRouter);

@@ -15,6 +15,7 @@ router.get(`/test`, asyncHandler( async(req, res) => {
 // returns all events for a particular date
 
 router.get(`/:date/:user`, asyncHandler( async(req, res) => {
+  console.log('hello')
   let date = req.params.date
   // console.log(date)
   let member_id = req.params.user
@@ -22,6 +23,7 @@ router.get(`/:date/:user`, asyncHandler( async(req, res) => {
   // let dateString = ''
   // dateString += formattedDate[1] + '/' + formattedDate[2] + '/' + formattedDate[0]
   // console.log('HERE IS THE DATE:' , dateString)
+  console.log(member_id)
   const memberGroups = await Group_Member.findAll({
     where: {
      member_id
@@ -29,12 +31,14 @@ router.get(`/:date/:user`, asyncHandler( async(req, res) => {
     include: [{model: Group}]
   })
 
+  console.log('MEMBER GROUPS:', memberGroups)
   const groups = []
 
-  memberGroups.forEach(group => {
+  await memberGroups.forEach(group => {
     groups.push(group.group_id)
   })
 
+  console.log(groups)
 
   const events = await Event.findAll( {
     where: {
@@ -44,6 +48,7 @@ router.get(`/:date/:user`, asyncHandler( async(req, res) => {
     }
   })
 
+  console.log(events)
 
   // res.json({matchingEvents})
   res.json({events})
@@ -54,7 +59,7 @@ router.get(`/:date/:user`, asyncHandler( async(req, res) => {
 
 router.post('/:id/attend', asyncHandler( async (req, res) => {
   const event_id = req.params.id
-  console.log('EVENT ID:', event_id)
+  // console.log('EVENT ID:', event_id)
   const {member_id} = req.body;
   await Event_Member.create({
     event_id,
@@ -113,20 +118,37 @@ router.delete(`/:id/delete`, asyncHandler( async(req, res) => {
 
 // provides info to the front end about a users event status
 
-router.get(`/:eventId/:member_id`, asyncHandler(async(req, res) => {
+router.get(`/:eventId/:member_id/check-status`, asyncHandler(async(req, res) => {
   const event_id = req.params.eventId
   const member_id = req.params.member_id
   // const {member_id} = req.body
   // console.log('GROUP ID:', group_id)
-  console.log('MEMBER ID:', member_id)
+  // console.log('MEMBER ID:', member_id)
   const isMember = await Event_Member.findAll({
     where: {
       [Op.and]: [{event_id}, {member_id}]
     }
   })
-  console.log('IS MEMBER:', isMember)
+  // console.log('IS MEMBER:', isMember)
   isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
 
 }))
+
+// router.get(`/check-attendence/:id`, asyncHandler(async(req, res) => {
+//   // console.log('hello')
+//   const member_id = req.params.id
+//   // const {member_id} = req.body
+//   // console.log('GROUP ID:', group_id)
+//   console.log('MEMBER ID:', member_id)
+//   const isMember = await Event_Member.findAll({
+//     where: {
+//       member_id
+//     }
+//   })
+//   // console.log('IS MEMBER:', isMember)
+//   // isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
+//   console.log(isMember)
+//   // res.json({'member_id': 'member_id'})
+// }))
 
 module.exports = router;

@@ -1,11 +1,11 @@
 const express = require('express');
 const {asyncHandler} = require('../../utils.js')
 const db = require('../../db/models')
-const { Group, Group_Member, Organizer, Event } = db
+const { Group, Group_Member, Organizer, Event, Member } = db
 const router = express.Router();
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
-
+const cors = require('cors');
 
 
 // returns all group data releated to the user once the group tab is clicked
@@ -40,14 +40,15 @@ router.get(`/search/:city`, asyncHandler( async(req, res) => {
 
 router.get(`/:id`, asyncHandler( async(req, res) => {
   const group_id = req.params.id
-  console.log('HERE IS THE ID:', group_id)
+  // console.log('HERE IS THE ID:', group_id)
   const group = await Group.findOne({
     where: {
-      id: group_id
+      id: group_id,
+      // include: [{model: Organizer}]
     }
   })
 
-  console.log('HERE IS THE GROUP:', group)
+  // console.log('HERE IS THE GROUP:', group.organizer_id)
 
   const events = await Event.findAll({
     where: {
@@ -55,8 +56,14 @@ router.get(`/:id`, asyncHandler( async(req, res) => {
     }
   })
 
+  const organizer = await Member.findOne({
+    where: {
+      id: group.organizer_id
+    }
+  })
+
   res.json({groupData: group,
-    eventData: events})
+    eventData: events, organizer: organizer})
 }))
 
 // allows user to create a group
@@ -114,7 +121,7 @@ router.post(`/:groupId/subscribe`, asyncHandler( async(req, res) => {
 router.patch(`/:groupId/increment`, asyncHandler( async(req, res) => {
   const group_id = req.params.groupId
   const {groupMembers} = req.body
-  
+
   await Group.update({
     members: groupMembers,
     where: {
@@ -149,12 +156,27 @@ router.get(`/:groupId/:member_id`, asyncHandler(async(req, res) => {
   // console.log('MEMBER ID:', member_id)
   const isMember = await Group_Member.findAll({
     where: {
-      [Op.and]: [{group_id}, {member_id}]
+      [Op.and]: [{group_id}, {member_id}],
+      // include: [{model: Event}]
     }
   })
   // console.log('IS MEMBER:', isMember)
   isMember.length > 0 ? res.json({content: 'content'}) : res.json({})
 
 }))
+
+// router.get(`:groupId/get/organizer`, asyncHandler(async(req, res) => {
+//   console.log('HELLO FROM THE BOWELS OF HELL')
+//   const group_id = req.params.groupId
+
+//   const organizer = await Group.findAll({
+//     where: {
+//       id: group_id,
+//       include: [{model: Organizer}]
+//     }
+//   })
+
+//   res.json({organizer})
+// }))
 
 module.exports = router;
